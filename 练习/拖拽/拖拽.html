@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        #div1{
+            width: 100px;
+            height: 100px;
+            background-color: #f00;
+            position: absolute;
+            top: 0;
+            left: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="div1"></div>
+<script src="js/event.js"></script>
+<script>
+    var ele=document.getElementById("div1");
+    //ele.onmousedown
+    //ele.onmousemove
+    //ele.onmouseup
+    //盒子的新位置＝盒子的老位置＋鼠标移动的距离（鼠标的新位置－鼠标的老位置）
+    on(this,"mousedown",down)
+    function down(e){//做准备拖拽
+        this.x= this.offsetLeft;// 盒子的老位置
+        this.y= this.offsetTop;
+        this.mx= e.pageX;//鼠标按下去的时候的位置
+        this.my= e.pageY;
+        if(this.setCapture){
+            this.setCapture();
+            on(this,"mousemove",move);
+            on(this,"mouseup",up);
+        }else{
+            //on(document,"mousemove",move);//move则指向了document
+            //on(document,"mouseup",up);
+            //无论move和up绑定给谁，它的this都要强制指向div1
+            var that=this;
+            this.MOVE=function(e){move.call(that,e)};
+            this.UP=function(e){up.call(that,e)}
+            on(document,"mousemove",this.MOVE);
+            on(document,"mouseup",this.UP);
+        }
+    }
+    function move(e){//进行拖拽
+        //计算盒子的新位置
+        //盒子的新位置＝盒子原来的位置＋鼠标移动的位置
+        //console.log(this);
+        ele.style.left=this.x+(e.pageX-this.mx)+"px";
+        ele.style.top=this.y+(e.pageY-this.my)+"px";
+    }
+    function up(){//结束拖拽
+        if(this.releaseCapture){
+            this.releaseCapture();
+            off(this,"mousemove",move);
+            off(this,"mouseup",up);
+        }else{
+            off(document,"mousemove",this.MOVE);
+            off(document,"mousemove",this.UP);
+        }
+    }
+    //事件性能：大约5-8ms查看一次事件是否发生了
+    //如果鼠标从开始的位置，到离开这个小div,没有到5ms的时间，丢掉了鼠标
+
+</script>
+</body>
+</html>
