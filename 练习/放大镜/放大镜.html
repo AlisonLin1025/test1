@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        #content{
+            width: 300px;
+            height: 223px;
+            position: relative;
+        }
+        #mask{
+            position: absolute;
+            background-color: #888888;
+            opacity: 0.5;
+            filter:alpha(opacity=50);
+        }
+        #show{
+            width: 300px;
+            height: 223px;
+            position: absolute;
+            left: 310px;
+            top: 0px;
+            background-color: #fc6;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div id="content">
+    <img src="img/smallPeony.jpg" width="300" height="223"/>
+</div>
+<script type="text/javascript">
+    content.onmouseenter=function(e){
+        e=e||window.event;
+        var mask=document.createElement("div");
+        mask.id="mask";
+        mask.style.width=300/950*300+"px";
+        mask.style.height=223/706*223+"px";
+        mask.style.left= e.clientX-this.offsetLeft+"px";
+        mask.style.top= e.clientX-this.offsetTop+"px";
+        this.appendChild(mask);
+
+        var show=document.createElement("div");
+        show.id="show";
+        this.appendChild(show);
+
+        var oImg=document.createElement("img");
+        oImg.src="img/peony.jpg";
+        show.appendChild(oImg);
+    }
+    content.onmousemove=function(e){
+        e=e||window.event;
+        var mask=document.getElementById("mask");
+        if(mask){
+            var l=e.clientX-this.offsetLeft-mask.offsetWidth/2;
+            var t=e.clientY-this.offsetTop-mask.offsetHeight/2;
+            if(l<=0){
+                mask.style.left=0;
+            }else if(l>=this.offsetWidth-mask.offsetWidth){
+                mask.style.left=this.offsetWidth-mask.offsetWidth+"px";
+            }else{
+                mask.style.left=l+"px";
+                show.scrollLeft=l*950/300;
+            }
+            if(t<=0){
+                mask.style.top=0;
+            }else if(t>=this.offsetHeight-mask.offsetHeight){
+                mask.style.top=this.offsetHeight-mask.offsetHeight+"px";
+            }else{
+                mask.style.top=t+"px";
+                show.scrollTop=t*706/223;
+            }
+        }
+    }
+    content.onmouseleave=function(e){
+        e=e||window.event;
+        var mask=document.getElementById("mask");
+        if(mask){
+            this.removeChild(mask);
+        }
+        var show=document.getElementById("show");
+        if(show){
+            this.removeChild(show);
+        }
+    }
+    //mask/小图＝show/大图
+</script>
+</body>
+</html>
